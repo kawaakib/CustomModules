@@ -1,0 +1,45 @@
+<odoo>
+  <!-- <record id="product_normal_form_view_inherit_boq_type" model="ir.ui.view">
+      <field name="name">material_requisition.form</field>
+      <field name="model">construction_management_app.material_requisition</field>
+      <field name="arch" type="xml">
+        <form>
+            <sheet>
+              <div class="oe_title" style="float:left;width:50%;margin-top:20px">
+                 <h1>
+                     <field name="name" string="Name" />
+                 </h1>
+             </div>
+
+             <group>
+               <group>
+                 <field name="project_id" />
+                 <field name="task_id" />
+                 <field name="task_user_id" />
+               </group>
+
+               <group>
+                 <field name="type" />
+                 <field name="analytic_account_id" />
+               </group>
+             </group>
+            </sheet>
+        </form>
+      </field>
+  </record>
+
+  <record id="product_normal_tree_view_inherit_boq_type" model="ir.ui.view">
+      <field name="name">material_requisition.form</field>
+      <field name="model">construction_management_app.material_requisition</field>
+      <field name="arch" type="xml">
+        <tree>
+           <field name="name" string="Ref No." />
+           <field name="project_id" />
+           <field name="task_id" />
+           <field name="task_user_id" />
+           <field name="type" />
+           <field name="analytic_account_id" />
+        </tree>
+      </field>
+  </record> -->
+</odoo>

@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <template id="task_report_id">
+          <t t-foreach="docs" t-as="doc">
+            <t t-call="web.internal_layout">
+                <t t-call="web.html_container">
+                 <div class="page">
+                     <div>
+                         <h3>
+                             <strong><span t-field="doc.name"/>( <span t-field="doc.stage_id.name"/> )</strong>
+                         </h3>
+                         <table class="table table-condensed">
+                            <thead>
+                                <th>Project </th>
+                                <th>Customer </th>
+                                <th>Assigned To </th>
+                                <th>Assigning Date </th>
+                                <th>Deadline</th>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><span t-field="doc.project_id.name"/></td>
+                                <td><span t-field="doc.partner_id.name"/></td>
+                                <td><span t-field="doc.user_id.name"/></td>
+                                <td><span t-field="doc.date_assign"/></td>
+                                <td><span t-field="doc.date_deadline"/></td>
+                            </tr>
+                        </tbody>
+                         </table>
+
+                         <h4>
+                             <strong>Planned &amp; Consumed</strong>
+                         </h4>
+
+                         <table class="table table-condensed">
+                            <thead>
+                                <th>Description </th>
+                                <th>Plnd Qty</th>
+                                <th>Cons Qty </th>
+                                <th>Plnd Rate</th>
+                                <th>Cons Rate </th>
+                                <th>Plnd Total</th>
+                                <th>Cons Total </th>
+                            </thead>
+                            <tbody>
+                            <t t-set="quantity" t-value="0"/>
+                            <t t-set="consumed_qty" t-value="0"/>
+                            <tr t-foreach="doc.planning_ids" t-as="plan">
+                                <td><span t-field="plan.name"/></td>
+                                <td><span t-field="plan.quantity"/></td> <t t-set="quantity" t-value="quantity+plan.quantity"/>
+                                <td><span t-field="plan.consumed_qty"/></td> <t t-set="consumed_qty" t-value="consumed_qty+plan.consumed_qty"/>
+                                <td><span t-field="plan.rate"/></td>
+                                <td><span t-field="plan.consumed_uprice"/></td>
+                                <td><span t-field="plan.price_subtotal"/></td>
+                                <td><span t-field="plan.consumed"/></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><strong><span t-esc="'{0:,.2f}'.format(quantity)" /></strong></td>
+                                <td><strong><span t-esc="'{0:,.2f}'.format(consumed_qty)" /></strong></td>
+                                <td></td>
+                                <td></td>
+                                <td><strong><span t-esc="'{0:,.2f}'.format(doc.total_planned)" /></strong></td>
+                                <td><strong><span t-esc="'{0:,.2f}'.format(doc.total_consumed)" /></strong></td>
+                            </tr>
+                        </tbody>
+                         </table>
+
+                         <t t-if="doc.timesheet_ids">
+                             <h3>Timesheet</h3>
+                             <table class="table table-condensed">
+                                <thead>
+                                    <th>Date </th>
+                                    <th>User </th>
+                                    <th>Description </th>
+                                    <th>Analytic Account</th>
+                                    <th>Duration</th>
+                                </thead>
+                                <tbody>
+                                <t t-foreach="doc.timesheet_ids" t-as="time">
+                                    <tr>
+                                        <td><span t-field="time.date"/></td>
+                                        <td><span t-field="time.user_id.name"/></td>
+                                        <td><span t-field="time.name"/></td>
+                                        <td><span t-field="time.account_id.name"/></td>
+                                        <td><span t-field="time.unit_amount" /></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                             </table>
+                             <p class="text-right">
+                                     <span>Initially Planned Hours :</span>
+                                     <span t-field="doc.planned_hours"/>
+
+                             </p>
+                             <p  class="text-right">
+                                     <span>Effective Hours :</span>
+                                     <span t-field="doc.effective_hours"/>
+
+                             </p>
+                             <p  class="text-right">
+                                     <span>Remaining Hours :</span>
+                                     <span t-field="doc.remaining_hours"/>
+
+                             </p>
+                         </t>
+                         <t t-if="doc.child_task_ids">
+                             <h3>Subtasks</h3>
+                             <table class="table table-condensed">
+                                <thead>
+                                    <th>Task Title</th>
+                                    <th>Project</th>
+                                    <th>Assigned To</th>
+                                    <th>Intially Planned Hours</th>
+                                    <th>Remaining Hours</th>
+                                    <th>Stage</th>
+                                </thead>
+                                <tbody>
+                                <t t-foreach="doc.child_task_ids" t-as="subtask">
+                                    <tr>
+                                        <td><span t-field="subtask.name"/></td>
+                                        <td><span t-field="subtask.project_id.name"/></td>
+                                        <td><span t-field="subtask.user_id.name"/></td>
+                                        <td><span t-field="subtask.planned_hours"/></td>
+                                        <td><span t-field="subtask.planned_hours" /></td>
+                                        <td><span t-field="subtask.stage_id.name" /></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                             </table>
+                         </t>
+                         <t t-if="doc.material_plan_ids">
+                             <h3>Material Plannings</h3>
+                             <table class="table table-condensed">
+                                <thead>
+                                    <th>Product </th>
+                                    <th>Description </th>
+                                    <th class="text-right">Quantity</th>
+                                    <th>Unit of Measure</th>
+                                </thead>
+                                <tbody>
+                                <t t-foreach="doc.material_plan_ids" t-as="plan">
+                                    <tr>
+                                        <td><span t-field="plan.product_id.name"/></td>
+                                        <td><span t-field="plan.description"/></td>
+                                        <td class="text-right"><span t-field="plan.product_uom_qty"/></td>
+                                        <td><span t-field="plan.product_uom.name"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                             </table>
+                         </t>
+                         <t t-if="doc.consumed_material_ids">
+                             <h3>Consumed Materials</h3>
+                             <table class="table table-condensed">
+                                <thead>
+                                    <th>Product </th>
+                                    <th>Description </th>
+                                    <th class="text-right">Quantity</th>
+                                    <th>Unit of Measure</th>
+                                </thead>
+                                <tbody>
+                                <t t-foreach="doc.consumed_material_ids" t-as="consumed">
+                                    <tr>
+                                        <td><span t-field="consumed.product_id.name"/></td>
+                                        <td><span t-field="consumed.description"/></td>
+                                        <td class="text-right"><span t-field="consumed.product_uom_qty"/></td>
+                                        <td><span t-field="consumed.product_uom.name"/></td>
+                                    </tr>
+                                </t>
+                                </tbody>
+                             </table>
+                         </t>
+                         <t t-if="doc.picking_ids">
+                             <h3>Material Requistions</h3>
+                             <table class="table table-condensed">
+                                <thead>
+                                    <th>Reference </th>
+                                    <th>Destination Location Zone </th>
+                                    <th>Partner</th>
+                                    <th>Scheduled Date</th>
+                                    <th>Source Document</th>
+                                    <th>Back Order of</th>
+                                    <th>Status</th>
+                                </thead>
+                                <tbody>
+                                <t t-foreach="doc.picking_ids" t-as="picking">
+                                    <tr>
+                                        <td><span t-field="picking.name"/></td>
+                                        <td><span t-field="picking.location_id.name"/></td>
+                                        <td><span t-field="picking.partner_id.name"/></td>
+<!--                                        <td><span t-field="picking.min_date"/></td>-->
+                                        <td><span t-field="picking.scheduled_date"/></td> <!--odoo11-->
+                                        <td><span t-field="picking.origin"/></td>
+                                        <td><span t-field="picking.backorder_id.name"/></td>
+                                        <td><span t-field="picking.state"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                             </table>
+                         </t>
+                         <t t-if="doc.move_ids">
+                             <h3>Stocks</h3>
+                             <table class="table table-condensed">
+                                <thead>
+                                    <th>Expected Date</th>
+                                    <th>Date</th>
+                                    <th>Source Document</th>
+                                    <th>Product</th>
+                                    <th class="text-right">Quantity</th>
+                                    <th>Unit of Measure</th>
+                                    <th>Status</th>
+                                </thead>
+                                <tbody>
+                                <t t-foreach="doc.move_ids" t-as="move">
+                                    <tr>
+                                        <td><span t-field="move.date_expected"/></td>
+                                        <td><span t-field="move.create_date"/></td>
+                                        <td><span t-field="move.origin"/></td>
+                                        <td><span t-field="move.product_id.name"/></td>
+                                        <td class="text-right"><span t-field="move.product_uom_qty"/></td>
+                                        <td><span t-field="move.product_uom.name"/></td>
+                                        <td><span t-field="move.state"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                             </table>
+                         </t>
+
+                        <p class="text-left">
+                            <span>Signature:____________________</span>
+                        </p>
+                     </div>
+                </div>
+              </t>
+            </t>
+        </t>
+        </template>
+    </data>
+</openerp>
